@@ -1,0 +1,34 @@
+---
+- name: Gather system information and perform checks on localhost
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Check localhost connectivity
+      ansible.builtin.ping:
+
+    - name: Ping Google
+      ansible.builtin.command:
+        cmd: ping -c 4 google.com
+      register: google_ping
+
+    - name: Display Google ping result
+      ansible.builtin.debug:
+        msg: "{{ google_ping.stdout_lines }}"
+
+    - name: Gather CPU information
+      ansible.builtin.command:
+        cmd: lscpu
+      register: cpu_info
+
+    - name: Display CPU information
+      ansible.builtin.debug:
+        msg: "{{ cpu_info.stdout_lines }}"
+
+    - name: Gather RAM information
+      ansible.builtin.command:
+        cmd: free -h
+      register: ram_info
+
+    - name: Display RAM information
+      ansible.builtin.debug:
+        msg: "{{ ram_info.stdout_lines }}"
