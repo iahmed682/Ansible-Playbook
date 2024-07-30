@@ -1,34 +1,32 @@
 ---
-- name: Gather system information and perform checks on localhost
+- name: Check basic server info
   hosts: localhost
-  gather_facts: false
+  connection: local
+  gather_facts: yes
+
   tasks:
-    - name: Check localhost connectivity
-      ansible.builtin.ping:
+    - name: Display OS information
+      debug:
+        msg: "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
 
-    - name: Ping Google
-      ansible.builtin.command:
-        cmd: ping -c 4 google.com
-      register: google_ping
+    - name: Display hostname
+      debug:
+        msg: "Hostname: {{ ansible_hostname }}"
 
-    - name: Display Google ping result
-      ansible.builtin.debug:
-        msg: "{{ google_ping.stdout_lines }}"
+    - name: Display IP address
+      debug:
+        msg: "IP address: {{ ansible_default_ipv4.address }}"
 
-    - name: Gather CPU information
-      ansible.builtin.command:
-        cmd: lscpu
-      register: cpu_info
+    - name: Display total memory
+      debug:
+        msg: "Total memory: {{ ansible_memtotal_mb }} MB"
 
-    - name: Display CPU information
-      ansible.builtin.debug:
-        msg: "{{ cpu_info.stdout_lines }}"
+    - name: Display number of CPUs
+      debug:
+        msg: "Number of CPUs: {{ ansible_processor_count }}"
 
-    - name: Gather RAM information
-      ansible.builtin.command:
-        cmd: free -h
-      register: ram_info
-
-    - name: Display RAM information
-      ansible.builtin.debug:
-        msg: "{{ ram_info.stdout_lines }}"
+    - name: Display disk usage
+      shell: df -h /
+      register: disk_usage
+    - debug:
+        msg: "Disk usage: {{ disk_usage.stdout_lines }}"
